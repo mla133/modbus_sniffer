@@ -1,0 +1,33 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Test/coverage
+.coverage
+htmlcov/
+.cache/
+
+# PyCharm / VSCode specifics (optional)
+*.iml
+
+# PCAPs (optional—keep large captures out of Git; store small samples under tests/pcaps)
+*.pcap
+*.pcapng
+!tests/pcaps/*.pcapng

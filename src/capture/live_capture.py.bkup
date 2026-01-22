@@ -1,0 +1,41 @@
+import pyshark
+from config import NIC_ADDRESS, WATCH_REGISTERS, WATCH_COILS
+from modbus.direction import normalize_func_code, get_packet_endpoints
+from modbus.registers import parse_register_map, check_register_rules
+from modbus.coils import parse_fc5, parse_fc15, check_coil_rules
+from mqtt.client import mqtt_publish
+from logging import log_err
+
+def run():
+    cap = pyshark.LiveCapture(
+        interface=NIC_ADDRESS,
+        display_filter="modbus && tcp.port == 502"
+    )
+
+    for pkt in cap.sniff_continuously():
+        try:
+            if not hasattr(pkt, "modbus"):
+                continue
+            m = pkt.modbus
+            fc = normalize_func_code(m)
+            src, dst, _, _ = get_packet_endpoints(pkt)
+
+            if fc in (3, 4, 6, 16):
+                regs = parse_register_map(m, fc)
+                matches = check_register_rules(regs, WATCH_REGISTERS)
+                if matches:
+                    mqtt_publish({"registers": matches, "ip": src})
+
+            elif fc == 5:
+                coils = parse_fc5(pkt, m)
+                if coils:
+                    mqtt_publish({"coils": coils, "ip": src})
+
+            elif fc == 15:
+                coils = parse_fc15(pkt, m)
+                matches = check_coil_rules(coils, WATCH_COILS)
+                if matches:
+                    mqtt_publish({"coils": matches, "ip": src})
+
+        except Exception as e:
+            log_err(e)
