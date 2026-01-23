@@ -40,3 +40,21 @@ python main.py watch --iface "Ethernet 4" --fc 5 --watch 500 501 --deltas-only
 # your thin script still works (see next step)
 python scripts/modbus_watch.py --iface "Ethernet 4" --fc 15 --watch 500 501 502 --deltas-only
 ```
+
+# Coverage reporting for unit tests
+## Install coverage tooling
+```
+python -m pip install pytest-cov coverage
+```
+
+## Generate the coverage report in JSON
+```
+coverage run -m pytest -m unit
+coverage json -o coverage.json
+```
+
+## Run the coverage Python script
+```
+python scripts/function_coverage_report.py
+```
+
