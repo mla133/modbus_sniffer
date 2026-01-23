@@ -7,13 +7,26 @@ Modular Modbus TCP sniffer with PCAP replay and live capture.
 python -m pip install -e .
 pytest
 ```
+## Usage 
+```
+usage: modbus_watch.py [-h] [--pcap PCAP] [--iface IFACE] [--fc FC]
+                       [--src SRC] [--dst DST] [--watch WATCH [WATCH ...]]
+                       [--deltas-only]
 
-## Usage (live capture)
-```
-python scripts/live_print_fc3.py "Ethernet 4"
-```
+options:
+  -h, --help            show this help message and exit
 
-## Usage (PCAP file)
-```
-python scripts/replay_print_fc3.py path/to/file.pcapng
+source:
+  --pcap PCAP           PCAP/PCAPNG file to replay
+  --iface IFACE         Live interface, e.g. "Ethernet 4"
+
+filters:
+  --fc FC               Modbus function code (default: 3)
+  --src SRC             Only packets with this source IP
+  --dst DST             Only packets with this destination IP
+
+registers:
+  --watch WATCH [WATCH ...]
+                        Registers to print (default: 100 and 200220)
+  --deltas-only         Print only when watched registers change value
 ```
