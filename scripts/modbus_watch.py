@@ -29,7 +29,7 @@ def main():
     args = ap.parse_args()
 
     if not (args.pcap or args.iface):
-        log_err("Choose one: --pcap <file> or --iface <name>", file=sys.stderr)
+        log_err("Choose one: --pcap <file> or --iface <name>")
         sys.exit(2)
 
     # Wireshark display filter (applied by tshark after capture)
@@ -115,10 +115,10 @@ def main():
             log_info(f"[{wall}] [{src}->{dst}] FC={args.fc}  {pairs}")
 
     except pyshark.capture.capture.TSharkNotFoundException:
-        log_err("tshark not found. Install Wireshark/TShark and ensure it's on PATH.", file=sys.stderr)
+        log_err("tshark not found. Install Wireshark/TShark and ensure it's on PATH.")
         sys.exit(1)
     except PermissionError:
-        log_err("Permission denied. On Windows, run your shell as Administrator for live capture.", file=sys.stderr)
+        log_err("Permission denied. On Windows, run your shell as Administrator for live capture.")
         sys.exit(1)
     finally:
         try:
