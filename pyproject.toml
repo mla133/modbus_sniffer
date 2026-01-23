@@ -8,3 +8,11 @@ packages = ["modbus", "mqtt", "capture", "pipeline"]
 
 [project.scripts]
 modbus-watch = "cli.modbus_watch:main"
+
+[tool.pytest.ini_options]
+# run everything except integration by default
+addopts = "-m 'not integration' -q"
+markers = [
+  "unit: fast, isolated tests",
+  "integration: tests that require pcap/network/external tools"
+]
