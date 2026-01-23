@@ -30,3 +30,13 @@ registers:
                         Registers to print (default: 100 and 200220)
   --deltas-only         Print only when watched registers change value
 ```
+
+# New usage for main.py
+```
+# via main.py (unified entry)
+python main.py watch --pcap path\to\cap.pcapng --fc 3 --watch 100 200 201 --deltas-only
+python main.py watch --iface "Ethernet 4" --fc 5 --watch 500 501 --deltas-only
+
+# your thin script still works (see next step)
+python scripts/modbus_watch.py --iface "Ethernet 4" --fc 15 --watch 500 501 502 --deltas-only
+```

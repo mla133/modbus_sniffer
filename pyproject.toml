@@ -5,3 +5,6 @@ version = "0.1.0"
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages = ["modbus", "mqtt", "capture", "pipeline"]
+
+[project.scripts]
+modbus-watch = "cli.modbus_watch:main"

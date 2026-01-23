@@ -1,31 +1,26 @@
+# main.py
 import sys
-from pathlib import Path
-
-from mqtt.client import init_mqtt
-from capture.live_capture import LivePacketSource
-from capture.pcap_replay import PcapPacketSource
-from pipeline.packet_handler import handle_packet
-from app_logging import log_info
-
-sys.path.insert(0, str(Path(__file__).parent))
+import argparse
 
 def main():
-    init_mqtt()
+    parser = argparse.ArgumentParser(prog="modbus-sniffer", description="Modbus toolbelt")
+    sub = parser.add_subparsers(dest="cmd", required=True)
 
-    if len(sys.argv) > 1:
-        pcap = sys.argv[1]
-        log_info(f"Replaying PCAP: {pcap}")
-        source = PcapPacketSource(
-            pcap_path=pcap,
-            realtime=True,
-            speed=1.0
-        )
-    else:
-        log_info("Starting live capture")
-        source = LivePacketSource()
+    watch = sub.add_parser("watch", help="PCAP or live watch (FC 3/5/15, optional --deltas-only)")
+    watch.set_defaults(handler="watch")
 
-    for pkt in source.packets():
-        handle_packet(pkt)
+    # Parse only the first-level command; pass the rest through
+    args, rest = parser.parse_known_args()
+
+    if args.cmd == "watch":
+        from cli.modbus_watch import main as watch_main
+        # Forward leftover args to the watch CLI so we don't duplicate flags
+        return watch_main(rest)
+
+    # Fallback (shouldn't hit due to required=True)
+    parser.print_help()
+    return 2
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
