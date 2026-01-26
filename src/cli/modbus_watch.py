@@ -11,17 +11,18 @@ from modbus.coils import parse_fc5, parse_fc15
 from app_logging import log_err, log_info, _ts
 
 # Project MQTT module (uses config.py)
-# If your module is at project root as client.py, change the import to:
+# If your module is at project root as client.py, change to:
 #   from client import init_mqtt, mqtt_publish
-from mqtt.client import init_mqtt, mqtt_publish
+from mqtt.client import init_mqtt, mqtt_publish  # <-- adjust if needed
 
 
 def _build_args(argv=None):
     ap = argparse.ArgumentParser(
-        prog="modbus-watch-change",
+        prog="modbus-watch",  # keep generic name so tests/UX look familiar
         description=(
-            "Watch Modbus packets (PCAP or live). Publish to MQTT only when the trigger "
-            "register's value CHANGES, and include the latest values of selected context registers."
+            "Watch Modbus packets (PCAP or live). "
+            "If --trigger-change-reg is provided, publish to MQTT only when that register's value changes; "
+            "otherwise just print watched values."
         ),
     )
 
@@ -52,11 +53,11 @@ def _build_args(argv=None):
         help="Print only when watched values change from their last seen value"
     )
 
-    # Edge-triggered publishing (no comparison; publish on any value change)
+    # Edge-triggered publishing (now OPTIONAL)
     trig = ap.add_argument_group("edge trigger (publish on change)")
     trig.add_argument(
-        "--trigger-change-reg", type=int, required=True,
-        help="Register address to publish on any value change (FC=3/4)"
+        "--trigger-change-reg", type=int,
+        help="Register address to publish on any value change (FC=3/4). If omitted, no MQTT publishes happen."
     )
     trig.add_argument(
         "--trigger-once", action="store_true",
@@ -111,11 +112,12 @@ def main(argv=None):
         log_err("Choose one: --pcap <file> or --iface <name>")
         return 2
 
-    # Initialize shared MQTT client (reads config.py)
-    init_mqtt()
+    # Initialize shared MQTT client (reads config.py).
+    # Safe to call even if we never publish.
+    init_mqtt()  # mqtt_publish encodes dict payload to JSON and publishes (QoS=1).
 
-    trigger_fired = False  # for --trigger-once
-    last_published_reg = {}  # reg -> last value we actually published (edge trigger)
+    trigger_fired = False          # for --trigger-once
+    last_published_reg = {}        # reg -> last value we actually published (edge trigger)
 
     # Wireshark display filter (post-capture filter)
     display_df = "modbus && tcp.port == 502"
@@ -171,13 +173,13 @@ def main(argv=None):
             if fc in (3, 4):
                 registers = parse_register_map(m, fc=fc) or {}  # {reg: value}
 
-                # Update last-seen cache for ALL registers in this frame
+                # Update last-seen cache for ALL registers in this frame (for context payloads)
                 for r, v in registers.items():
-                    REG_LAST[r] = v
+                    REG_LAST[r] = v  # ensures we can include latest 200/205 later
 
                 # Edge-trigger: publish only when the trigger register's value changes
                 trig_reg = args.trigger_change_reg
-                if trig_reg in registers:
+                if trig_reg is not None and trig_reg in registers:
                     cur_val = registers[trig_reg]
                     prev_pub = last_published_reg.get(trig_reg)
 
@@ -197,7 +199,7 @@ def main(argv=None):
                                 trigger_reg=trig_reg, trigger_val=cur_val,
                                 context_regs=context
                             )
-                            mqtt_publish(payload)
+                            mqtt_publish(payload)  # publishes dict as JSON to configured topic
                             last_published_reg[trig_reg] = cur_val
                             if args.trigger_once:
                                 trigger_fired = True
