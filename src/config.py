@@ -5,7 +5,7 @@ NIC_ADDRESS = "Ethernet 4"
 # MQTT
 MQTT_BROKER = "192.168.181.78"
 MQTT_PORT = 1883
-MQTT_TOPIC = "modbus/alerts"
+MQTT_TOPIC = "modbus/triggers"
 MQTT_CLIENT_ID = f"modbus-sniffer-{socket.gethostname()}"
 MQTT_USERNAME = "debian"
 MQTT_PASSWORD = "temppwd"

@@ -57,4 +57,3 @@ coverage json -o coverage.json
 ```
 python scripts/function_coverage_report.py
 ```
-
