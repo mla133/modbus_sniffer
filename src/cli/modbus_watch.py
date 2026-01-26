@@ -21,17 +21,17 @@ def _build_args(argv=None):
     srcdst.add_argument("--iface", help='Live interface name, e.g. "Ethernet 4"')
 
     filt = ap.add_argument_group("filters")
-    filt.add_argument("--fc", type=int, default=3, choices=[3, 5, 15],
-                      help="Modbus function code to watch (3, 5, or 15). Default: 3")
+    filt.add_argument("--fc", type=int, default=3, choices=[3, 4, 5, 15],
+                      help="Modbus function code to watch (3, 4, 5, or 15). Default: 3")
     filt.add_argument("--src", help="Only packets with this source IP")
     filt.add_argument("--dst", help="Only packets with this destination IP")
 
     watch = ap.add_argument_group("watch set")
     watch.add_argument(
         "--watch", nargs="+", type=int,
-        default=[100] + list(range(200, 221)),
-        help="Registers/Coils to print. Used for FC=3 (registers) and FC=5/15 (coils). "
-             "Default: 100 and 200..220"
+        default=[100] + list(range(200, 211)),
+        help="Registers/Coils to print. Used for FC=3/4 (registers) and FC=5/15 (coils). "
+             "Default: 100 and 200..210"
     )
 
     ap.add_argument("--deltas-only", action="store_true",

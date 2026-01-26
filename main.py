@@ -6,7 +6,7 @@ def main():
     parser = argparse.ArgumentParser(prog="modbus-sniffer", description="Modbus toolbelt")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    watch = sub.add_parser("watch", help="PCAP or live watch (FC 3/5/15, optional --deltas-only)")
+    watch = sub.add_parser("watch", help="PCAP or live watch (FC 3/4/5/15, optional --deltas-only)")
     watch.set_defaults(handler="watch")
 
     # Parse only the first-level command; pass the rest through
