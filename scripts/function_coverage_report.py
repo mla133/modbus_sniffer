@@ -5,7 +5,7 @@ from types import ModuleType
 from typing import Dict, Set, Tuple
 
 PKGS = ["modbus", "capture", "pipeline", "mqtt", "cli"]  # adjust as needed
-COVER_JSON = Path("coverage.json")
+COVER_JSON = Path("tests/coverage.json")
 
 def load_covered_lines() -> Dict[Path, Set[int]]:
     data = json.loads(COVER_JSON.read_text(encoding="utf-8"))

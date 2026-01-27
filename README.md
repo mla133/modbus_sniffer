@@ -69,3 +69,17 @@ python src/cli/modbus_watch.py \
   --trace-triggers --echo-trigger
 ```
 This script publishes a topic to the MQTT broker configured in _config.py_ that triggers when the register 100 changes.  It also publishes the most recent read of the watched registers (200, 205 in this example), and pushes that topic also.
+
+
+### Session logging (start on `100 → 3`, stop on `100 → 4`)
+
+You can ask the sniffer to **start a new log file** whenever a specific register hits a value,
+then **record all Modbus traffic** until the register moves to another value:
+
+```bash
+python main.py watch \
+  --pcap tests/pcaps/sample.pcapng \
+  --fc 3 \
+  --session-log \
+  --log-dir ./logs
+```
