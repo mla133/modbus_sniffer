@@ -23,6 +23,7 @@ build/
 .coverage
 htmlcov/
 .cache/
+coverage.json
 
 # PyCharm / VSCode specifics (optional)
 *.iml
