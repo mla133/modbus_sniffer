@@ -14,7 +14,7 @@ def handle_packet(pkt):
         fc = normalize_func_code(m)
         src, dst, _, _ = get_packet_endpoints(pkt)
 
-        if fc in (3, 4, 6, 16):
+        if fc in (3, 4):
             regs = parse_register_map(m, fc)
             matches = check_register_rules(regs, WATCH_REGISTERS)
             if matches:
@@ -26,7 +26,8 @@ def handle_packet(pkt):
 
         elif fc == 5:
             coils = parse_fc5(pkt, m)
-            if coils:
+            matches = check_coil_rules(coils, WATCH_COILS)
+            if matches:
                 mqtt_publish({
                     "type": "coil",
                     "ip": src,
