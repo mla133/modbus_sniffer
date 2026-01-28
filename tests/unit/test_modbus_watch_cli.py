@@ -7,7 +7,7 @@ import sys
 import pytest
 
 # We import the module under test after monkeypatching to ensure our stubs are used
-MODULE_PATH = "src.cli.modbus_watch"
+MODULE_PATH = "cli.modbus_watch"
 
 
 class FakePkt:

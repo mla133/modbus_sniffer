@@ -32,3 +32,6 @@ coverage.json
 *.pcap
 *.pcapng
 !tests/pcaps/*.pcapng
+
+# Logging from session
+logs/
