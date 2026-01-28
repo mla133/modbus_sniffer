@@ -1,6 +1,12 @@
 [project]
 name = "modbus-sniffer"
-version = "0.1.0"
+version = "0.2.0"
+requires-python = ">=3.12"
+dependencies = [
+  # Pin to the minor series you validated; allows patch updates which are typically safe.
+  "paho-mqtt>=2.1,<2.2",
+  # ...other deps...
+]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
