@@ -96,7 +96,7 @@ python main.py watch \
 ## Testing EXE Builds
 
 1. **Basic PCAP Replay (FC=3)**
-This verifies your executable can:
+   This verifies your executable can:
 - read a PCAP/PCAPNG file
 - parse Modbus registers via PyShark
 - print watched addresses
@@ -130,7 +130,7 @@ FC=3 100=6
 ```
 
 3. **Session Logging (start on 100=3, stop on 100=4)**
-This verifies:
+   This verifies:
 - session‑file creation
 - session‑log capture of all FC 3/4/5/15
 - correct start/stop edge detection
@@ -144,6 +144,7 @@ modbus-sniffer.exe watch
 ```
 
 After running:
+
 - A file like *C:\logs\modbus\2026-01-27_15-44-55.txt* should exist.
 - File should contain mixed entries, e.g.:
 
@@ -154,7 +155,7 @@ After running:
 ```
 
 4. **Custom Session Start/Stop Values**
-If you want to test non‑default behavior:
+   If you want to test non‑default behavior:
 
 ```bash
 modbus-sniffer.exe watch
@@ -166,9 +167,9 @@ modbus-sniffer.exe watch
   --session-stop-val 9
   --log-dir "C:\logs\alt"
 ```
-5. **MQTT Trigger Mode (FC 3 change → MQTT publish)**
-This tests:
 
+5. **MQTT Trigger Mode (FC 3 change → MQTT publish)**
+   This tests:
 - your MQTT v2 callbacks
 - stable trigger edge detection
 - inclusion of context registers
@@ -183,9 +184,24 @@ modbus-sniffer.exe watch
     --trace-triggers
     --echo-trigger
 ```
+
 Expected logs:
+
 ```bash
 [trace] init change-reg 100=5
 [trace] CHANGE reg=100 5->7 ctx[200=44, 205=1] -> PUBLISH
 ```
+
 If your MQTT broker is reachable, messages should appear on the target topic.
+
+6. **Testing logging functionality and publishing MQTT triggers using PCAP**
+   
+```bash
+./dist/modbus-sniffer.exe watch
+ --pcap "tests/pcaps/sample.pcapng"
+ --session-log --session-start-reg 100
+ --session-start-val 3 --session-stop-val 4
+ --log-dir "logs/"
+ --trigger-change-reg 100 --include-regs 200 205
+ --payload-format json
+```

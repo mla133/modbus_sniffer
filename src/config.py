@@ -3,12 +3,12 @@ import socket
 NIC_ADDRESS = "Ethernet 4"
 
 # MQTT
-MQTT_BROKER = "192.168.181.78"
+MQTT_BROKER = "192.168.179.11"
 MQTT_PORT = 1883
-MQTT_TOPIC = "modbus/triggers"
+MQTT_TOPIC = "Dept22/Pulsebox/modbus/triggers"
 MQTT_CLIENT_ID = f"modbus-sniffer-{socket.gethostname()}"
-MQTT_USERNAME = "debian"
-MQTT_PASSWORD = "temppwd"
+MQTT_USERNAME = ""
+MQTT_PASSWORD = ""
 MQTT_KEEPALIVE = 60
 
 # Pulse box
