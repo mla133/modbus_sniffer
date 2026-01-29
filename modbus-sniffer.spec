@@ -1,30 +1,58 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=[],
+    hiddenimports=[
+        "pyshark.tshark.tshark",
+        # If you hit pkg_resources/jaraco issues again, you can force:
+        # "jaraco.text",
+        # "jaraco.functools",
+        # "jaraco.collections",
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=[
+        # Already excluded
+        "tkinter",
+        "numpy",
+        "pytest",
+        "PyQt5",
+
+        # Newly identified removable packages (mostly safe)
+        # "lxml",
+        "PIL",
+        "pygments",
+        "chardet",
+        "dns",
+        "rich",
+        "_brotli",
+        "pywin32_system32",
+        "pycparser",
+        "html5lib",
+
+        # DO NOT exclude setuptools here (see explanation below)
+        # "setuptools",
+    ],
     noarchive=False,
-    optimize=0,
+    optimize=2,  # 0=no opt, 1=removes asserts, 2=also removes docstrings
 )
-pyz = PYZ(a.pure)
+
+pyz = PYZ(a.pure, a.zipped_data)
 
 exe = EXE(
     pyz,
     a.scripts,
-    [],
-    exclude_binaries=True,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
     name='modbus-sniffer',
     debug=False,
     bootloader_ignore_signals=False,
-    strip=False,
+    strip=True,
     upx=True,
     console=True,
     disable_windowed_traceback=False,
@@ -32,13 +60,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-)
-coll = COLLECT(
-    exe,
-    a.binaries,
-    a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='modbus-sniffer',
 )
