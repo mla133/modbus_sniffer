@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "modbus-sniffer"
 #version = "0.2.0"
-version = ["version"]		# <- version comes from Git tags (ex. git tag -a v0.2.3 -m "Release 0.2.3")
+dynamic = ["version"]		# <- version comes from Git tags (ex. git tag -a v0.2.3 -m "Release 0.2.3")
 description = "Utilities and helpers for parsing and testing Modbus traffic"
 readme = "README.md"
 requires-python = ">=3.12"
